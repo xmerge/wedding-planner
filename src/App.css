@@ -1,0 +1,135 @@
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #1f2937;
+}
+
+.top-nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.nav-button {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.nav-button:hover {
+  background: #cbd5e1;
+}
+
+.nav-button.active {
+  background: #1d4ed8;
+  color: #fff;
+}
+
+h1 {
+  margin: 0 0 16px;
+}
+
+h2 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+}
+
+.panel {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.95rem;
+}
+
+input {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.95rem;
+}
+
+button {
+  background: #1d4ed8;
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  padding: 9px 14px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1e40af;
+}
+
+.error {
+  margin: 10px 0 0;
+  color: #dc2626;
+}
+
+.bazi-panel p {
+  margin: 6px 0;
+}
+
+.result-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.result-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 10px;
+  background: #fafafa;
+}
+
+.result-item p {
+  margin: 6px 0 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.about-panel {
+  background: linear-gradient(135deg, #ffffff, #f8fbff);
+  border: 1px solid #dbeafe;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08);
+}
+
+.about-title {
+  margin: 0 0 10px;
+  font-size: 1.1rem;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  .field-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .top-nav {
+    flex-direction: column;
+  }
+}
