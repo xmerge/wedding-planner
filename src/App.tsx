@@ -3,6 +3,7 @@ import About from './components/About'
 import { getBaZi } from './core/bazi'
 import { checkRedFlags } from './core/rules'
 import { scoreDate } from './core/scorer'
+import type { Mode } from './core/types'
 import './App.css'
 
 interface CandidateResult {
@@ -44,10 +45,15 @@ function eachDay(start: Date, end: Date): Date[] {
   return dates
 }
 
+function getModeLabel(mode: Mode): string {
+  return mode === 'strict' ? '严格模式' : '非严格模式'
+}
+
 function App() {
   const [currentPage, setCurrentPage] = useState<'calculator' | 'about'>(
     'calculator',
   )
+  const [mode, setMode] = useState<Mode>('relaxed')
   const [groomBirthday, setGroomBirthday] = useState('')
   const [brideBirthday, setBrideBirthday] = useState('')
   const [rangeStart, setRangeStart] = useState('')
@@ -96,16 +102,17 @@ function App() {
 
     const scored = days
       .map((date) => {
-        const score = scoreDate(date, groomDate, brideDate)
-        const redFlag = checkRedFlags(date)
+        const scoreResult = scoreDate(date, groomDate, brideDate, mode)
+        const redFlag = checkRedFlags(date, groomDate, brideDate, mode)
 
         return {
           date: formatDate(date),
-          score: score.score,
-          reasons: score.reasons,
+          score: scoreResult.score,
+          reasons: scoreResult.reasons,
           redFlags: redFlag.flags,
         }
       })
+      .filter((item) => item.redFlags.length === 0) // 过滤掉有红线的日期
       .sort((a, b) => b.score - a.score)
 
     setError('')
@@ -136,6 +143,32 @@ function App() {
       {currentPage === 'calculator' ? (
         <>
       <h1>婚礼择日助手</h1>
+
+      <section className="panel mode-panel">
+        <h2>择日模式</h2>
+        <div className="mode-switch">
+          <button
+            type="button"
+            className={mode === 'strict' ? 'mode-btn active' : 'mode-btn'}
+            onClick={() => setMode('strict')}
+          >
+            严格模式
+          </button>
+          <button
+            type="button"
+            className={mode === 'relaxed' ? 'mode-btn active' : 'mode-btn'}
+            onClick={() => setMode('relaxed')}
+          >
+            非严格模式
+          </button>
+        </div>
+        <p className="mode-desc">
+          {mode === 'strict' 
+            ? '严格遵循传统择日规则，适合重视传统习俗的用户。需避开岁破、月破、四离四绝、杨公忌等凶日。'
+            : '简化择日规则，适合追求便捷的现代用户。仅避开冲生肖和生日，侧重周末、节假日等实用因素。'
+          }
+        </p>
+      </section>
 
       <section className="panel">
         <div className="field-grid">
@@ -200,25 +233,24 @@ function App() {
       )}
 
       <section className="panel">
-        <h2>结果列表</h2>
+        <h2>推荐日期 <span className="mode-tag">{getModeLabel(mode)}</span></h2>
         {results.length === 0 ? (
-          <p>点击“计算推荐日期”后显示候选日期评分。</p>
+          <p>点击"计算推荐日期"后显示候选日期评分。</p>
         ) : (
           <ul className="result-list">
-            {results.map((item) => (
+            {results.slice(0, 20).map((item) => (
               <li key={item.date} className="result-item">
                 <div className="row">
                   <strong>{item.date}</strong>
-                  <span>{item.score} / 100</span>
+                  <span className="score">{item.score} 分</span>
                 </div>
-                <p>加分原因：{item.reasons.join('、')}</p>
-                <p>
-                  红线检测：
-                  {item.redFlags.length > 0 ? item.redFlags.join('、') : '无'}
-                </p>
+                <p className="reasons">✓ {item.reasons.join(' · ')}</p>
               </li>
             ))}
           </ul>
+        )}
+        {results.length > 20 && (
+          <p className="more-hint">仅显示前 20 个推荐日期，共 {results.length} 个可选日期</p>
         )}
       </section>
         </>
